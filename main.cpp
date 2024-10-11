@@ -30,6 +30,16 @@ menu()
   return input;
 }
 
+static int
+get_size()
+{
+  int a;
+  printf("\nInput size: ");
+  std::cin >> a;
+  getchar(); // skip \n
+  return a;
+}
+
 int
 main()
 {
@@ -55,7 +65,16 @@ main()
 
        case '2':
        {
-          printf("!!!\n");
+          auto size = get_size();
+          if(size <= 0)
+          {
+            printf("\nSize must be >= 0! Try again!\n");
+            continue;
+          }
+
+          parser.get()->generate_random(size);
+          alg.get()->set(parser->get_size(), parser->get_input());
+
        } break;
 
 

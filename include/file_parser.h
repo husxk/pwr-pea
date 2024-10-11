@@ -21,22 +21,28 @@ public:
   {
   }
 
-  void get_filename();
-  void parse_file();
+  void
+  get_filename();
+
+  void
+  parse_file();
+
+  void
+  generate_random(int);
 
   void print_data();
 
   void
   clear()
   {
-     this->size = 0;
-     input.clear();
+    this->size = 0;
+    input.clear();
   }
 
   std::vector<int>
   get_input()
   {
-     return this->input;
+    return this->input;
   }
 
   int

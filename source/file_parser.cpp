@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <cstring>
+#include <cstdlib>
 
 #include "file_parser.h"
 #include "common.h"
@@ -29,7 +30,7 @@ file_parser::parse_file()
 
   file >> this->size;
 
-  input.reserve(this->size * this->size);
+  this->input.reserve(this->size * this->size);
 
   while(file >> tmp)
     input.push_back(tmp);
@@ -48,4 +49,15 @@ file_parser::print_data()
     if( (i + 1) % this->size == 0)
       printf("\n");
   }
+}
+
+void
+file_parser::generate_random(int size_)
+{
+  this->size = size_;
+  this->input.reserve(this->size * this->size);
+
+  for(int i = 0; i < this->size * this->size; i++)
+    this->input.emplace_back(std::rand() % 1000);
+
 }
