@@ -14,6 +14,7 @@ menu()
   printf("1. Load data from file\n");
   printf("2. Generate data\n");
   printf("3. Show data\n");
+  printf("4. Brute force\n");
   printf("8. Exit\n");
   printf("Input: ");
 
@@ -32,7 +33,8 @@ menu()
 int
 main()
 {
-  auto parser = new file_parser();
+  auto parser = std::make_unique<file_parser>();
+  auto alg = std::make_unique<graph>();
 
   srand(time(NULL));
 
@@ -44,9 +46,11 @@ main()
      {
        case '1':
        {
-         parser->clear();
-         parser->get_filename();
-         parser->parse_file();
+         parser.get()->clear();
+         parser.get()->get_filename();
+         parser.get()->parse_file();
+
+         alg.get()->set(parser->get_size(), parser->get_input());
        } break;
 
        case '2':
@@ -57,11 +61,13 @@ main()
 
        case '3':
        {
-         parser->print_data();
+         parser.get()->print_data();
        } break;
 
        case '4':
        {
+         alg.get()->brute_force();
+         alg.get()->print();
        } break;
 
        case '5':
@@ -78,7 +84,6 @@ main()
 
        case '8':
        {
-         delete parser;
          return 0;
        }
      }

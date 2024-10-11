@@ -38,4 +38,10 @@ public:
   {
      return this->input;
   }
+
+  int
+  get_size()
+  {
+    return this->size;
+  }
 };
