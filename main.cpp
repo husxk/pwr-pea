@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <iostream>
+#include <chrono>
 
 #include "file_parser.h"
 #include "graph.h"
@@ -86,14 +87,30 @@ main()
 
        case '4':
        {
+        auto start = std::chrono::high_resolution_clock::now();
+
          alg.get()->brute_force();
+
+        auto end = std::chrono::high_resolution_clock::now();
+
          alg.get()->print();
+
+         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+        std::cout << std::endl << "Time elapsed: " << duration << std::endl;
        } break;
 
        case '5':
        {
-          alg.get()->bb();
-          alg.get()->print();
+         auto start = std::chrono::high_resolution_clock::now();
+
+         alg.get()->bb();
+
+         auto end = std::chrono::high_resolution_clock::now();
+
+         alg.get()->print();
+
+         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+        std::cout << std::endl << "Time elapsed: " << duration << std::endl;
        } break;
 
        case '6':
