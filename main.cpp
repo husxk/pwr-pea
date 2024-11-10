@@ -15,6 +15,7 @@ menu()
   printf("2. Generate data\n");
   printf("3. Show data\n");
   printf("4. Brute force\n");
+  printf("5. BB\n");
   printf("8. Exit\n");
   printf("Input: ");
 
@@ -91,6 +92,8 @@ main()
 
        case '5':
        {
+          alg.get()->bb();
+          alg.get()->print();
        } break;
 
        case '6':
