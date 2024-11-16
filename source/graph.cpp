@@ -28,12 +28,6 @@ graph::print()
   printf("\n");
 }
 
-bool
-graph::get_next_permutation(int* permutation)
-{
-  return std::next_permutation(permutation + 1, permutation + this->size);
-}
-
 void
 graph::fill_path(int* path)
 {
@@ -50,27 +44,46 @@ graph::find_len(int i, int j)
 }
 
 void
+graph::permutate(int* path, int i)
+{
+  if(i == this->path_size - 1)                // path is full
+  {
+    int current_length = 0;
+
+    path[this->path_size - 1] = 0;            // append last element
+    for(int j = 1; j < this->path_size; j++)  // calculate cost
+      current_length += this->find_len(path[j - 1], path[j]);
+
+    if(this->path_length > current_length)    // swap if current path is better than 
+                                               // current best
+    {
+      this->path_length = current_length;
+      std::memcpy(this->shortest_path.get(), path, this->size * sizeof(int));
+    }
+
+    return;
+  }
+
+  for(int j = i; j < this->path_size - 1; j++)
+  {
+    std::swap(path[i], path[j]);
+
+    permutate(path, i + 1);
+
+    std::swap(path[j], path[i]);
+  }
+}
+
+void
 graph::brute_force()
 {
+  // create and fill path with default path (0-1-2-3-...-0)
   auto path = std::make_unique<int[]>(this->path_size);
   this->fill_path(path.get());
 
   this->path_length = std::numeric_limits<int>::max();
-  int current_length = 0;
 
-  do
-  {
-    for(int i = 1; i < this->path_size; i++)
-      current_length += this->find_len(path[i - 1], path[i]);
-
-    if(this->path_length > current_length)
-    {
-      this->path_length = current_length;
-      std::memcpy(this->shortest_path.get(), path.get(), this->size * sizeof(int));
-    }
-
-    current_length = 0;
-  } while(this->get_next_permutation(path.get()));
+  this->permutate(path.get(), 1);
 }
 
 void
@@ -123,11 +136,14 @@ graph::bb_calculate_path(queue_data_t& path, int* mins)
     if(visited[i] == true)
       continue;
 
+    // get last calculated length of path
     int length = path.get_length();
 
+    // add cost of new city
     const int cost = this->find_len(last, i);
     length += cost;
 
+    // calculate mins after including this city
     visited.get()[i] = true;
     length += this->add_mins(visited.get(), mins);
     visited.get()[i] = false;
@@ -227,6 +243,7 @@ graph::bb()
   this->queue.get()->add(std::move(data));
 
   // guess that best path is 'first' path
+  // 0-1-2-3-...-0
   auto path = std::make_unique<int[]>(this->path_size);
   this->fill_path(path.get());
 

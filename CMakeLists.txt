@@ -2,18 +2,20 @@ cmake_minimum_required(VERSION 3.13)
 
 project(main CXX)
 
+option(TEST OFF)
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_BUILD_TYPE RELEASE)
 
 add_compile_options(
-                -Wall -Wextra -fstack-protector-all -fsanitize=address
+                -Wall -Wextra -fstack-protector-all #-fsanitize=address
         )
 
-add_link_options(
-                -fsanitize=address
-        )
+#add_link_options(
+#                -fsanitize=address
+#        )
 
 file(GLOB src
      ./source/*.cpp
@@ -30,3 +32,6 @@ target_include_directories(
         ./include/
         )
 
+if(TEST)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE TESTS=1)
+endif()

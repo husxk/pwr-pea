@@ -7,6 +7,7 @@
 
 #include "file_parser.h"
 #include "graph.h"
+#include "tests.h"
 
 static int
 menu()
@@ -45,6 +46,14 @@ get_size()
 int
 main()
 {
+#if TESTS
+  tests test;
+  test.run();
+  return 0;
+#endif
+
+  using time_ms = std::chrono::duration<float, std::chrono::milliseconds::period>;
+
   auto parser = std::make_unique<file_parser>();
   auto alg = std::make_unique<graph>();
 
@@ -87,30 +96,30 @@ main()
 
        case '4':
        {
-        auto start = std::chrono::high_resolution_clock::now();
+        auto start = NOW();
 
          alg.get()->brute_force();
 
-        auto end = std::chrono::high_resolution_clock::now();
+        auto end = NOW();
 
          alg.get()->print();
 
-         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        std::cout << std::endl << "Time elapsed: " << duration << std::endl;
+         auto duration = time_ms(end - start);
+        printf("\nTime: %fms\n", duration.count());
        } break;
 
        case '5':
        {
-         auto start = std::chrono::high_resolution_clock::now();
+         auto start = NOW();
 
          alg.get()->bb();
 
-         auto end = std::chrono::high_resolution_clock::now();
+         auto end = NOW();
 
          alg.get()->print();
 
-         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        std::cout << std::endl << "Time elapsed: " << duration << std::endl;
+         auto duration = time_ms(end - start);
+        std::cout << std::endl << "Time elapsed: " << duration.count() << "ms" << std::endl;
        } break;
 
        case '6':

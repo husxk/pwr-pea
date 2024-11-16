@@ -194,6 +194,9 @@ class graph
   print();
 
   void
+  permutate(int*, int);
+
+  void
   find_mins(int*);
 
 private:
