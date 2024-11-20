@@ -58,6 +58,6 @@ file_parser::generate_random(int size_)
   this->input.reserve(this->size * this->size);
 
   for(int i = 0; i < this->size * this->size; i++)
-    this->input.emplace_back(std::rand() % 1000);
+    this->input.emplace_back(std::rand() % 1000 + 1);
 
 }

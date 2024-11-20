@@ -187,7 +187,8 @@ graph::bb_calculate_path(queue_data_t& path, int* mins)
 void
 graph::change_shortest_path(int* path, int length)
 {
-  std::copy_n(path, this->path_size, this->shortest_path.get());
+//  std::copy_n(path, this->path_size, this->shortest_path.get());
+  copy(path, this->path_size, this->shortest_path.get());
   this->path_length = length;
 }
 

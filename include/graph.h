@@ -3,6 +3,15 @@
 #include <vector>
 #include <memory>
 #include <cstring>
+#include <limits>
+
+template<typename T>
+void
+copy(T from, size_t size, T to)
+{
+  for(size_t i = 0; i < size; i++)
+    to[i] = from[i];
+}
 
 class queue_data_t
 {
@@ -19,7 +28,8 @@ public:
   : size(size_)
   {
     this->path = std::make_unique<int[]>(this->size);
-    std::copy_n(path, this->size, this->path.get());
+//    std::copy_n(path, this->size, this->path.get());
+    copy(path, this->size, this->path.get());
 
     this->length = len;
   }
@@ -28,7 +38,8 @@ public:
   : size(other.size)
   {
     this->path = std::make_unique<int[]>(this->size);
-    std::copy_n(other.path.get(), this->size, this->path.get());
+//    std::copy_n(other.path.get(), this->size, this->path.get());
+    copy(other.path.get(), this->size, this->path.get());
     this->elements = other.elements;
 
     this->length = other.length;;
