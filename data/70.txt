@@ -1,10 +1,4 @@
-NAME: ftv70
-TYPE: ATSP
-COMMENT: Asymmetric TSP (Fischetti)
-DIMENSION: 71
-EDGE_WEIGHT_TYPE: EXPLICIT
-EDGE_WEIGHT_FORMAT: FULL_MATRIX 
-EDGE_WEIGHT_SECTION
+71
   100000000          26          46          74          82          65
          90         104         102         100         147         134
          90          75          69         106         117          42
@@ -846,4 +840,3 @@ EDGE_WEIGHT_SECTION
          56          47         243          88         107         179
         117         102         143         136         151         175
           0
-EOF

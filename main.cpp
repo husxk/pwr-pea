@@ -18,13 +18,14 @@ menu()
   printf("3. Show data\n");
   printf("4. Brute force\n");
   printf("5. BB\n");
+  printf("6. SA\n");
   printf("8. Exit\n");
   printf("Input: ");
 
   const char input = getchar();
   getchar(); // skip \n
 
-  if(input < 49 || input > 56)
+  if(input < 49 || input > 57)
   {
      printf("Wrong input, try again\n");
      return menu();
@@ -124,6 +125,16 @@ main()
 
        case '6':
        {
+         auto start = NOW();
+
+         alg.get()->run_sa();
+
+         auto end = NOW();
+
+         alg.get()->print();
+
+         auto duration = time_ms(end - start);
+        std::cout << std::endl << "Time elapsed: " << duration.count() << "ms" << std::endl;
        } break;
 
        case '7':

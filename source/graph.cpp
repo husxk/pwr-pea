@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <cstdio>
+#include <memory>
 
 void
 graph::set(int size_, std::vector<int> data_)
@@ -14,6 +15,8 @@ graph::set(int size_, std::vector<int> data_)
   this->path_size = this->size + 1;
   this->shortest_path = std::make_unique<int[]>(this->path_size);
   this->path_length = std::numeric_limits<int>::max();
+
+  this->sa = std::make_unique<SA>(size_, data_);
 }
 
 void
@@ -255,4 +258,12 @@ graph::bb()
   this->change_shortest_path(path.get(), this->path_length);
 
   this->bb_work_loop(mins.get());
+}
+
+void
+graph::run_sa()
+{
+  this->sa->run();
+  ::copy(this->sa->get_raw_array(), this->path_size, this->shortest_path.get());
+  this->path_length = this->sa->get_length();
 }

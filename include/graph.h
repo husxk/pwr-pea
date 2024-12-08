@@ -6,6 +6,7 @@
 #include <limits>
 
 #include "queue.h"
+#include "sa.h"
 
 class graph
 {
@@ -27,6 +28,9 @@ class graph
   bb();
 
   void
+  run_sa();
+
+  void
   print();
 
   void
@@ -46,6 +50,7 @@ private:
 
   std::unique_ptr<queue_t> queue = std::make_unique<queue_t>();
 
+  std::unique_ptr<SA> sa;
 
 private:
   bool
