@@ -45,6 +45,14 @@ public:
     return this->path->get_length();
   }
 
+  void
+  set(int temperature, int iterations, double scale)
+  {
+    this->temperature = temperature;
+    this->iterations = iterations;
+    this->scale = scale;
+  }
+
 private:
 
 private:

@@ -39,6 +39,9 @@ class graph
   void
   find_mins(int*);
 
+  void
+  set_sa(int, int, double);
+
 private:
   int size;
   int path_size;
@@ -50,7 +53,10 @@ private:
 
   std::unique_ptr<queue_t> queue = std::make_unique<queue_t>();
 
-  std::unique_ptr<SA> sa;
+  std::shared_ptr<SA> sa;
+  int sa_temperature = SA::DEFAULT_TEMP;
+  int sa_iterations = SA::DEFAULT_ITERATIONS;
+  double sa_scale = SA::DEFAULT_SCALE;
 
 private:
   bool

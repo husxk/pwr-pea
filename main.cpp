@@ -19,6 +19,7 @@ menu()
   printf("4. Brute force\n");
   printf("5. BB\n");
   printf("6. SA\n");
+  printf("7. set SA\n");
   printf("8. Exit\n");
   printf("Input: ");
 
@@ -34,6 +35,28 @@ menu()
   return input;
 }
 
+static void
+set_SA(std::shared_ptr<graph>& alg)
+{
+  int temperature = 0;
+  int iterations= 0;
+  double scale = 0.0;
+
+  printf("\nSet temperature (int): ");
+  std::cin >> temperature;
+  getchar(); // skip \n
+
+  printf("\nSet scale (double): ");
+  std::cin >> scale;
+  getchar(); // skip \n
+
+  printf("\nSet iterations (int): ");
+  std::cin >> iterations;
+  getchar(); // skip \n
+
+  alg->set_sa(temperature, iterations, scale);
+
+}
 static int
 get_size()
 {
@@ -56,7 +79,7 @@ main()
   using time_ms = std::chrono::duration<float, std::chrono::milliseconds::period>;
 
   auto parser = std::make_unique<file_parser>();
-  auto alg = std::make_unique<graph>();
+  auto alg = std::make_shared<graph>();
 
   srand(time(NULL));
 
@@ -139,6 +162,7 @@ main()
 
        case '7':
        {
+          set_SA(alg);
        } break;
 
        case '8':

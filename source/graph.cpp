@@ -16,7 +16,19 @@ graph::set(int size_, std::vector<int> data_)
   this->shortest_path = std::make_unique<int[]>(this->path_size);
   this->path_length = std::numeric_limits<int>::max();
 
-  this->sa = std::make_unique<SA>(size_, data_);
+  this->sa = std::make_shared<SA>(size_, data_,
+                                   this->sa_temperature,
+                                   this->sa_scale,
+                                   this->sa_iterations);
+}
+
+void
+graph::set_sa(int temperature, int iterations, double scale)
+{
+  this->sa_temperature = temperature;
+  this->sa_iterations = iterations;
+  this->sa_scale = scale;
+  this->sa->set(temperature, iterations, scale);
 }
 
 void
