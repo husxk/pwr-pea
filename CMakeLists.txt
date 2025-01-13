@@ -10,11 +10,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE RELEASE)
 
 add_compile_options(
-                -Wall -Wextra #-fstack-protector-all -fsanitize=address -g
+                -Wall -Wextra -fstack-protector-all -fsanitize=address -g
         )
 
 add_link_options(
-#                -fsanitize=address
+                -fsanitize=address
         )
 
 file(GLOB src

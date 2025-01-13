@@ -20,6 +20,9 @@ graph::set(int size_, std::vector<int> data_)
                                    this->sa_temperature,
                                    this->sa_scale,
                                    this->sa_iterations);
+
+  this->genetic = std::make_unique<Genetic>();
+  this->genetic->set(this->size, data_);
 }
 
 void
@@ -278,4 +281,13 @@ graph::run_sa()
   this->sa->run();
   ::copy(this->sa->get_raw_array(), this->path_size, this->shortest_path.get());
   this->path_length = this->sa->get_length();
+}
+
+void
+graph::run_genetic()
+{
+  this->genetic->run();
+//  ::copy(this->sa->get_raw_array(), this->path_size, this->shortest_path.get());
+//  this->path_length = this->sa->get_length();
+
 }

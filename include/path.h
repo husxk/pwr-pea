@@ -183,6 +183,63 @@ public:
     return this->path_size;
   }
 
+  void
+  print()
+  {
+    for(int i = 0; i < this->path_size; i++)
+      printf("%d ", this->dummy.get()[i]);
+
+    printf("\n");
+  }
+
+  void
+  generate_random_path()
+  {
+    auto path = this->dummy.get();
+    auto lookup = std::make_shared<int[]>(this->path_size);
+    std::memset(lookup.get(), 0, this->path_size * sizeof(int));
+    auto size = this->path_size - 1;
+
+
+    // start city
+    path[0] = 0;
+
+    for(int i = 1; i < size; i++)
+    {
+      bool emplaced = false;
+
+      do
+      {
+        bool found = false;
+
+        // rand <1; size - 1>
+        const int city = (rand() % (size - 1)) + 1;
+
+        for(int j = 1; j < size; j++)
+        {
+            if(lookup.get()[j] == city)
+            {
+              found = true;
+              break;
+            }
+        }
+
+        if(!found)
+        {
+           path[i] = city;
+           lookup.get()[i] = city;
+
+           emplaced = true;
+        }
+
+      } while(!emplaced);
+    }
+
+    // end city
+    path[size] = 0;
+  }
+
+
 private:
   std::shared_ptr<tsp_path> path;
   std::unique_ptr<int[]> dummy;

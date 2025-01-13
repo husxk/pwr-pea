@@ -7,6 +7,7 @@
 
 #include "queue.h"
 #include "sa.h"
+#include "genetic.h"
 
 class graph
 {
@@ -29,6 +30,9 @@ class graph
 
   void
   run_sa();
+
+  void
+  run_genetic();
 
   void
   print();
@@ -57,6 +61,8 @@ private:
   int sa_temperature = SA::DEFAULT_TEMP;
   int sa_iterations = SA::DEFAULT_ITERATIONS;
   double sa_scale = SA::DEFAULT_SCALE;
+
+  std::unique_ptr<Genetic> genetic;
 
 private:
   bool

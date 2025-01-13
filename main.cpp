@@ -20,13 +20,14 @@ menu()
   printf("5. BB\n");
   printf("6. SA\n");
   printf("7. set SA\n");
-  printf("8. Exit\n");
+  printf("8. Genetic\n");
+  printf("9. Exit\n");
   printf("Input: ");
 
   const char input = getchar();
   getchar(); // skip \n
 
-  if(input < 49 || input > 57)
+  if(input < 49 || input > 58)
   {
      printf("Wrong input, try again\n");
      return menu();
@@ -166,6 +167,12 @@ main()
        } break;
 
        case '8':
+       {
+            alg->run_genetic();
+            break;
+       }
+
+       case '9':
        {
          return 0;
        }
