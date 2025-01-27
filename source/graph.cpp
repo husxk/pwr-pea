@@ -287,7 +287,25 @@ void
 graph::run_genetic()
 {
   this->genetic->run();
-//  ::copy(this->sa->get_raw_array(), this->path_size, this->shortest_path.get());
-//  this->path_length = this->sa->get_length();
+
+  ::copy(this->genetic->get_best_array(), this->path_size, this->shortest_path.get());
+
+  this->genetic->calc();
+
+  this->path_length = this->genetic->get_length_best();
+
+}
+
+void
+graph::print_best_sa()
+{
+  printf("\nBest Path SA:\n");
+  printf("\nLength of path: %d\n", this->sa->get_best_length());
+  printf("Path: ");
+
+  for(int i = 0; i < this->path_size; i++)
+    printf("%d ", this->sa->get_best_raw()[i]);
+
+  printf("\n");
 
 }

@@ -1,82 +1,46 @@
 #pragma once
 
+#include <vector>
+#include <limits>
+
 #include "vector.hpp"
 #include "common.h"
 
 
 class Genetic
 {
-  struct pop
-  {
-    pop()
-    {
-      this->dummy_size = 0;
-    }
-
-    pop(pop&& other)
-    {
-      this->dummy.swap(other.dummy);
-      this->dummy_size = other.dummy_size;
-    }
-
-    pop(const pop& other)
-    {
-      this->dummy = other.dummy;
-      this->dummy_size = other.dummy_size;
-    }
-
-
-    pop(std::shared_ptr<dummy_path> d)
-    {
-      this->dummy = d;
-      this->dummy_size = this->dummy->calculate_path();
-    }
-
-    pop& operator=(pop&& other)
-    {
-      this->dummy.swap(other.dummy);
-      this->dummy_size = other.dummy_size;
-
-      return *this;
-    }
-
-    void print()
-    {
-      printf("Size: %d ", dummy_size);
-      dummy->print();
-    }
-
-    int size()
-    {
-      return this->dummy_size;
-    }
-
-    std::shared_ptr<dummy_path> dummy;
-    int dummy_size;
-  };
-
 public:
+
+  void
+  set_pop(int pop)
+  {
+    this->population_count = pop;
+  }
+
+  void
+  set_params(double mut, double cross)
+  {
+    MUTATION_RATE = mut;
+    CROSS_RATE = cross;
+  }
+  void
+
+  set_tournament(int size)
+  {
+    tournament_size = size;
+  }
+
+  void
+  set_iters(int i)
+  {
+    this->iterations = i;
+  }
+
 
   void
   run()
   {
-    create_population();
-
-    for (int i = 0; i < this->iterations; i++)
-    {
-      this->selection();
-      this->mutation();
-
-      this->sort();
-      this->population_clean_up();
-
-/*      printf("\n%d Iteration:\n", i);
-      this->population.print();
-      printf("\n^^^^^^^^^^^^^^^^^\n");
-*/
-    }
-
-      this->population.print();
+    run_genetic();
   }
 
   void
@@ -89,76 +53,87 @@ public:
     this->population.reserve(2 * population_count);
   }
 
+  auto
+  get_best_array()
+  {
+    return this->best_path->get_path();
+  }
+
+  auto
+  get_length_best()
+  {
+    return this->best_path->get_length();
+  }
+
+  void
+  calc()
+  {
+    this->best_path->calculate_path();
+  }
+
 
 private:
 
   void
-  selection()
+  create_population()
   {
-    // there is nothing really to do,
-    // as we will always take upper half of
-    // sorted population for mutation
-
-    this->index = (this->population_count / 2);
-
-    return;
-  }
-
-  int
-  rand_next(int i)
-  {
-    int ret = 0;
-
-    do
+    for(unsigned int i = 0; i < this->population_count; i++)
     {
-      ret = rand() % this->index;
-    } while(ret == i);
+      dummy_path dummy(this->path);
 
-    return ret;
+      dummy.generate_random_path();
+
+      this->population.push_back(std::move(dummy));
+    }
+
+    this->best_path = std::make_unique<dummy_path>(this->population[0]);
   }
 
-  void
-  population_clean_up()
+  dummy_path
+  tournament()
   {
-    for(int i = this->population.get_elements(); i >= this->population_count; i--)
-      this->population.pop();
+    dummy_path* best = &this->population[rand() % this->population_count];
 
+    for (int i = 0; i < this->tournament_size; i++)
+    {
+        dummy_path* p = &this->population[rand() % this->population_count];
+
+        if(p == best)
+        {
+           --i;
+           continue;
+        }
+
+        if (p->get_length() < best->get_length())
+        {
+            best = p;
+        }
+    }
+
+    dummy_path tmp(*best);
+
+    best->set_length(std::numeric_limits<int>::max());
+
+    return tmp;
   }
 
-  void
-  mutation()
+  dummy_path
+  cross(dummy_path* parent1, dummy_path* parent2)
   {
-    mutation_half_half();
-  }
+    // create child
+    dummy_path dummy(*parent1);
 
-  void
-  mutation_half_half()
-  {int i;
-    for(i = 0; i < this->population_count; i++)
-      mutation_half_half_();
-//    printf("\nCalled: %d\n", i);
-  }
+    int* arr = dummy.get_path();
+    const int size = dummy.get_size() - 1;
 
-  void
-  mutation_half_half_()
-  {
-    const int first = rand() % this->index;
-    const int second = rand_next(first);
-
-    std::shared_ptr<dummy_path> dummy = std::make_shared<dummy_path>(this->path);
-
-    int* arr = dummy->get_path();
-    const int size = dummy->get_size() - 1;
-
-    int* first_ptr  = this->population.get_array()[first].dummy->get_path();
-    int* second_ptr = this->population.get_array()[second].dummy->get_path();
+    const int* second_ptr = parent2->get_path();
 
     const int taken_from_first = size / 2;
 
-    // copy first half
-    ::copy(first_ptr, taken_from_first, arr);
+    // dummy is deep copy of parent1, so we need to override
+    // second half of dummy
 
-    for(int i = taken_from_first, z = 0; i < size; i++)
+    for(int i = taken_from_first, z = 1; i < size; i++)
     {
       bool emplaced = false;
 
@@ -168,7 +143,7 @@ private:
 
         const int city = second_ptr[z];
 
-        for(int j = 1; j < size; j++)
+        for(int j = 1; j < i; j++)
         {
             if(arr[j] == city)
             {
@@ -188,82 +163,108 @@ private:
       } while(!emplaced);
     }
 
-    this->population.add(std::move(dummy));
+    return dummy;
   }
 
   void
-  create_population()
+  mutate(dummy_path& p)
   {
-    for(int i = 0; i < this->population_count; i++)
-    {
-      std::shared_ptr<dummy_path> dummy = std::make_shared<dummy_path>(this->path);
-      dummy->generate_random_path();
+      int i;
+      for(i = 0; i == 0; i = rand() % (p.get_size() - 1));
 
-      this->population.add(pop(std::move(dummy)));
-    }
+      int j;
+      for(j = i; j == i || j == 0; j = rand() % (p.get_size() - 1));
 
-    this->sort();
+      p.swap_elements(i, j);
+      p.calculate_path();
   }
 
   void
-  sort()
+  setup()
   {
-    auto shared_array = this->population.get_array();
-    this->quicksort(shared_array.get(), 0, this->population.get_elements() - 1);
+    this->population.clear();
   }
 
-  int
-  partition(pop arr[], int low, int high)
+  void
+  run_genetic()
   {
-    const int pivot = arr[high].size();
-    int i = low - 1;
+    this->setup();
+    this->create_population();
 
-    for (int j = low; j < high; j++)
+    for (int i = 0; i < this->iterations; i++)
     {
-        if (arr[j].size() < pivot)
+        std::vector<dummy_path> new_population;
+        new_population.reserve(this->population_count);
+
+        // recreate  population
+        while (true)
         {
-            i++;
-            this->swap(i, j);
+            dummy_path p1 = tournament();
+            dummy_path p2 = tournament();
+
+            // add child
+            if (((double) rand() / RAND_MAX) < CROSS_RATE)
+            {
+              if(new_population.size() == this->population_count)
+                break;
+
+              dummy_path p3 = cross(&p1, &p2);
+
+              if ((double)rand() / RAND_MAX < MUTATION_RATE)
+                  mutate(p3);
+
+              p3.calculate_path();
+              new_population.push_back(p3);
+            }
+
+            // add p1
+            if(new_population.size() ==  this->population_count)
+              break;
+
+            if ((double)rand() / RAND_MAX < MUTATION_RATE)
+              mutate(p1);
+
+            new_population.push_back(p1);
+
+            // add p2
+            if(new_population.size() ==  this->population_count)
+              break;
+
+            if ((double)rand() / RAND_MAX < MUTATION_RATE)
+              mutate(p2);
+
+            new_population.push_back(p2);
         }
-    }
 
-    this->swap(i + 1, high);
-
-    return i + 1;
-  }
-
-  void
-  quicksort(pop arr[], int low, int high)
-  {
-    if (low < high) {
-        int pi = partition(arr, low, high);
-
-        quicksort(arr, low, pi - 1);
-        quicksort(arr, pi + 1, high);
+        population.swap(new_population);
+        find_best();
     }
   }
 
   void
-  swap(int i, int j)
+  find_best()
   {
-    auto shared_array = this->population.get_array();
-    auto arr = shared_array.get();
-
-    pop tmp = std::move(arr[i]);
-    arr[i] = std::move(arr[j]);
-    arr[j] = std::move(tmp);
-
+    for(unsigned int i = 0; i < this->population.size(); i++)
+    {
+      if(population[i].get_length() < best_path->get_length())
+      {
+        this->best_path = std::make_unique<dummy_path>(this->population[i]);
+      }
+    }
   }
 
-  private:
+private:
 
-  int iterations = 100;
-  int population_count = 500;
+  int iterations = 1000;
+  unsigned int population_count = 500;
+  int tournament_size = 5;
+  double pop_percentage = 0.8;
 
-  // selection should set this as index to which we can perform mutation
-  int index = 0;
+  double MUTATION_RATE = 0.2;
+  double CROSS_RATE = 0.8;
 
-  Vector<pop> population;
+  std::vector<dummy_path> population;
   std::shared_ptr<tsp_path> path;
+  std::unique_ptr<dummy_path> best_path;
 
 };

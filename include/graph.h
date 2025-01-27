@@ -23,6 +23,26 @@ class graph
   set(int, std::vector<int>);
 
   void
+  set_genetic_params(double x, double y)
+  {
+    this->genetic->set_params(x, y);
+  }
+
+  void
+  set_genetic_tournament(int s)
+  {
+    this->genetic->set_tournament(s);
+  }
+
+  void
+  set_genetic_iters(int s)
+  {
+    this->genetic->set_iters(s);
+  }
+
+
+ 
+  void
   brute_force();
 
   void
@@ -46,6 +66,21 @@ class graph
   void
   set_sa(int, int, double);
 
+  void
+  set_pop(int pop)
+  {
+    this->genetic->set_pop(pop);
+  }
+
+  void
+  print_best_sa();
+
+  auto
+  get_result()
+  {
+    return this->path_length;
+  }
+
 private:
   int size;
   int path_size;
@@ -68,7 +103,7 @@ private:
   bool
   get_next_permutation(int*);
 
-  void
+ void
   fill_path(int*);
 
   int

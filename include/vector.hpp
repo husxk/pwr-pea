@@ -14,7 +14,7 @@ public:
     this->size = num;
     this->elements = 0;
     this->array = std::make_shared<T[]>(num);
-    printf("\nReserve with num = %d\n", num);
+//    printf("\nReserve with num = %d\n", num);
   }
 
   void

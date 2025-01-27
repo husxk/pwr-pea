@@ -8,6 +8,8 @@ SA::run()
 {
   this->path->fill_path();
   int length = this->path->calculate_path();
+  this->best_path->copy();
+  this->best_path->set_length(length);
 
   std::unique_ptr<dummy_path> dummy = std::make_unique<dummy_path>(this->path);
   double temp = this->temperature;
@@ -35,6 +37,13 @@ SA::run()
       {
         length = dummy_length;
         this->path->copy(dummy->get_path(), dummy->get_size());
+
+        if(length < this->best_path->get_length())
+        {
+           this->best_path->set_length(length);
+           this->best_path->copy();
+        }
+
         continue;
       }
 

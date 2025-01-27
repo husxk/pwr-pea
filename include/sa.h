@@ -19,6 +19,7 @@ public:
   , iterations(iters)
   {
     path = std::make_shared<tsp_path>(n);
+    best_path = std::make_shared<dummy_path>(path);
     this->path->set(n, data);
   }
 
@@ -37,6 +38,18 @@ public:
   get_raw_array()
   {
     return path.get()->get_raw_array();
+  }
+
+  auto
+  get_best_raw()
+  {
+    return this->best_path->get_path();
+  }
+
+  auto
+  get_best_length()
+  {
+    return this->best_path->get_length();
   }
 
   int
@@ -61,6 +74,7 @@ private:
   int count = 0;
 
   std::shared_ptr<tsp_path> path;
+  std::shared_ptr<dummy_path> best_path;
   int cost = 0;
   int iterations = 0;
 };

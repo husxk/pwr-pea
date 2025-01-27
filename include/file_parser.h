@@ -25,6 +25,12 @@ public:
   get_filename();
 
   void
+  set_filename(const char* file, int length)
+  {
+    memcpy(filename, file, length);
+  }
+
+  void
   parse_file();
 
   void

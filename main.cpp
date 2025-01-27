@@ -21,7 +21,7 @@ menu()
   printf("6. SA\n");
   printf("7. set SA\n");
   printf("8. Genetic\n");
-  printf("9. Exit\n");
+  printf("9. Set Genetic\n");
   printf("Input: ");
 
   const char input = getchar();
@@ -58,6 +58,18 @@ set_SA(std::shared_ptr<graph>& alg)
   alg->set_sa(temperature, iterations, scale);
 
 }
+static void
+set_genetic(std::shared_ptr<graph>& alg)
+{
+  int population = 0;
+
+  printf("\nSet population (int): ");
+  std::cin >> population;
+  getchar(); // skip \n
+
+  alg->set_pop(population);
+}
+
 static int
 get_size()
 {
@@ -156,6 +168,7 @@ main()
          auto end = NOW();
 
          alg.get()->print();
+         alg.get()->print_best_sa();
 
          auto duration = time_ms(end - start);
         std::cout << std::endl << "Time elapsed: " << duration.count() << "ms" << std::endl;
@@ -168,13 +181,24 @@ main()
 
        case '8':
        {
-            alg->run_genetic();
+          auto start = NOW();
+
+          alg->run_genetic();
+
+          auto end = NOW();
+
+          alg->print();
+          auto duration = time_ms(end - start);
+
+         std::cout << std::endl << "Time elapsed: " 
+               << duration.count() << "ms" << std::endl;
             break;
        }
 
        case '9':
        {
-         return 0;
+          set_genetic(alg);
+          break;
        }
      }
   }

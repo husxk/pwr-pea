@@ -144,6 +144,16 @@ public:
     dummy = std::make_unique<int[]>(path->get_size());
   }
 
+  dummy_path(const dummy_path& other)
+  : path(other.path)
+  , path_size(path->get_size())
+  {
+    dummy = std::make_unique<int[]>(path->get_size());
+    ::copy(other.dummy.get(), path->get_size(), dummy.get());
+
+    this->path_length = other.get_length();
+  }
+
   void
   swap_elements(int i, int j)
   {
@@ -160,7 +170,7 @@ public:
   }
 
   auto
-  get_path()
+  get_path() const
   {
     return this->dummy.get();
   }
@@ -189,6 +199,7 @@ public:
     for(int i = 0; i < this->path_size; i++)
       printf("%d ", this->dummy.get()[i]);
 
+    printf("%d", this->get_length());
     printf("\n");
   }
 
@@ -237,8 +248,20 @@ public:
 
     // end city
     path[size] = 0;
+    this->calculate_path();
   }
 
+  int
+  get_length() const
+  {
+    return this->path_length;
+  }
+
+  auto
+  set_length(int len)
+  {
+    this->path_length = len;
+  }
 
 private:
   std::shared_ptr<tsp_path> path;
